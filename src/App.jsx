@@ -17,6 +17,7 @@ export default function App() {
     uploadDays: 0 
   });
   const [darkMode, setDarkMode] = useState(false);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   // Fetch files on mount
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function App() {
     fetchAnalytics();
     
     // Poll for notifications every 2 seconds
-    const notifInterval = setInterval(fetchNotifications, 2000);
+    const notifInterval = setInterval(fetchNotifications, 300);
     const analyticsInterval = setInterval(fetchAnalytics, 10000);
     
     return () => {
@@ -56,6 +57,7 @@ export default function App() {
   };
 
   const fetchAnalytics = async () => {
+    setLoadingAnalytics(true);
     try {
       const res = await fetch('/api/analytics');
       if (!res.ok) throw new Error('Analytics fetch failed');
@@ -65,6 +67,8 @@ export default function App() {
     } catch (err) {
       console.error('Error fetching analytics:', err);
       setStats({ totalFiles: 0, totalSize: 0, totalSizeMB: '0.00', uploadDays: 0 });
+    } finally {
+      setLoadingAnalytics(false);
     }
   };
 
@@ -111,7 +115,7 @@ export default function App() {
               onRefresh={fetchNotifications}
               onClose={() => setShowNotifications(false)}
             />
-          )}
+          )}loading={loadingAnalytics} 
 
           {/* Analytics Dashboard */}
           <Analytics stats={stats} />

@@ -12,7 +12,9 @@ import {
   insertNotification,
   getAllNotifications,
   markNotificationAsRead,
-  markAllNotificationsAsRead
+  markAllNotificationsAsRead,
+  deleteFile,
+  getTotalStats
 } from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -147,6 +149,48 @@ app.get('/api/download/:id', async (req, res) => {
     res.download(file.path, file.name);
   } catch (error) {
     console.error('Download error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete file
+app.delete('/api/files/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const file = await getFileById(id);
+    
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    // Delete from filesystem
+    if (fs.existsSync(file.path)) {
+      fs.unlinkSync(file.path);
+    }
+
+    // Delete from database
+    await deleteFile(id);
+    await insertNotification(`Deleted: ${file.name}`, 'info');
+    
+    res.json({ success: true, message: 'File deleted' });
+  } catch (error) {
+    console.error('Delete error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get analytics/stats
+app.get('/api/analytics', async (req, res) => {
+  try {
+    const stats = await getTotalStats();
+    res.json({
+      totalFiles: stats.totalFiles || 0,
+      totalSize: stats.totalSize || 0,
+      totalSizeMB: ((stats.totalSize || 0) / (1024 * 1024)).toFixed(2),
+      uploadDays: stats.uploadDays || 0
+    });
+  } catch (error) {
+    console.error('Analytics error:', error);
     res.status(500).json({ error: error.message });
   }
 });

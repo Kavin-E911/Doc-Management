@@ -1,10 +1,13 @@
 import { useState } from 'react';
 
+const CATEGORIES = ['General', 'Invoice', 'Contract', 'Report', 'Receipt', 'Other'];
+
 export default function Upload({ onUploadComplete }) {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [overallProgress, setOverallProgress] = useState(0);
   const [bulkMode, setBulkMode] = useState(false);
+  const [category, setCategory] = useState('General');
 
   const handleFiles = (fileList) => {
     const newFiles = Array.from(fileList).map(f => ({
@@ -24,6 +27,7 @@ export default function Upload({ onUploadComplete }) {
 
     const formData = new FormData();
     files.forEach(f => formData.append('files', f.file));
+    formData.append('category', category);
 
     try {
       const xhr = new XMLHttpRequest();
@@ -102,6 +106,21 @@ export default function Upload({ onUploadComplete }) {
       {/* File List */}
       {files.length > 0 && (
         <div className="mt-8">
+          {/* Category Selector */}
+          <div className="mb-6 flex gap-4 items-center">
+            <label className="font-semibold text-gray-700">📁 Category:</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              disabled={uploading}
+              className="px-4 py-2 border border-gray-300 rounded-lg font-medium focus:outline-none focus:border-blue-500 disabled:opacity-50"
+            >
+              {CATEGORIES.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
           {bulkMode && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
               <p className="text-yellow-800 font-semibold">📦 Processing {files.length} files in background...</p>

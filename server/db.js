@@ -124,3 +124,29 @@ export function markAllNotificationsAsRead() {
     });
   });
 }
+
+export function deleteFile(id) {
+  return new Promise((resolve, reject) => {
+    db.run(`
+      DELETE FROM files WHERE id = ?
+    `, [id], function(err) {
+      if (err) reject(err);
+      else resolve({ changes: this.changes });
+    });
+  });
+}
+
+export function getTotalStats() {
+  return new Promise((resolve, reject) => {
+    db.all(`
+      SELECT 
+        COUNT(*) as totalFiles, 
+        SUM(size) as totalSize,
+        COUNT(DISTINCT DATE(uploadedAt)) as uploadDays
+      FROM files
+    `, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows[0] || { totalFiles: 0, totalSize: 0, uploadDays: 0 });
+    });
+  });
+}

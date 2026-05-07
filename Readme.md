@@ -12,14 +12,19 @@ Full-stack application for uploading PDF documents, tracking progress in real-ti
 
 ## Quick Start
 
-### Install & Run
+### Frontend Only (Completed)
 
 ```bash
-pip install -r requirements.txt
-python app.py
+set PATH=C:\Program Files\nodejs;%PATH%
+npm install
+npm run dev
 ```
 
-Open `http://localhost:5000` in your browser.
+Frontend runs on `http://localhost:3000/`
+
+### Full Stack (Backend Next)
+
+Backend API will be built with Node.js/Express or Python/Flask.
 
 ## How It Works
 
@@ -32,44 +37,62 @@ Open `http://localhost:5000` in your browser.
 
 ## Architecture
 
-- **Frontend**: Vanilla HTML/CSS/JavaScript (no build step)
-- **Backend**: Flask + SQLite
-- **Storage**: Local disk (`app/uploads/`)
+- **Frontend**: React 18 + Vite + Tailwind CSS (✅ Complete)
+- **Backend**: Node.js/Express (Next)
+- **Storage**: Local disk
 - **Design**: Livvic font, white/blue theme
 
-## Database Schema
+## Frontend Structure
 
-### files table
-```sql
-CREATE TABLE files (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  size INTEGER NOT NULL,
-  path TEXT NOT NULL,
-  uploadedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-)
+```
+src/
+├── App.jsx                    # Main app with header & state
+├── components/
+│   ├── Upload.jsx            # Drag-drop, file selection, progress
+│   ├── FileList.jsx          # Document table
+│   └── NotificationCenter.jsx # Notification modal
+├── index.css                 # Tailwind styles
+└── main.jsx                  # React entry point
 ```
 
-### notifications table
-```sql
-CREATE TABLE notifications (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  message TEXT NOT NULL,
-  type TEXT DEFAULT 'info',
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-  isRead INTEGER DEFAULT 0
-)
-```
+### Frontend Features Implemented
 
-## API Endpoints
+- **Upload Component** 
+  - Drag-and-drop zone with visual feedback
+  - File selection via button
+  - Individual file progress bars
+  - Bulk mode detection (3+ files)
+  - Clear button to reset
 
-- `POST /api/upload` — Upload files
-- `GET /api/files` — List all uploaded files
-- `GET /api/notifications` — Get all notifications
-- `POST /api/notifications/read/:id` — Mark notification as read
-- `POST /api/notifications/read-all` — Mark all as read
-- `GET /api/download/:id` — Download file
+- **File List**
+  - Display uploaded files in table
+  - Show filename, size, upload date
+  - Download links for each file
+
+- **Notification Center**
+  - Modal popup with all notifications
+  - Unread badge on notification bell
+  - Mark individual/all as read
+  - Timestamp display
+
+- **Styling**
+  - Livvic font throughout
+  - Blue/white color scheme
+  - Gradient background
+  - Responsive design
+  - Hover effects on all interactive elements
+
+## Status
+
+**✅ FRONTEND COMPLETE** — Ready for backend integration
+
+- React + Vite dev server running on port 3000
+- All UI components built and styled
+- Proxy configured for backend API calls (/api → http://localhost:5000)
+- Error handling and loading states in place
+
+**Next Steps**: Build backend API endpoints
 
 ---
 
-Built for SWS AI Technical Assessment — 1 hour challenge.
+Built for SWS AI Technical Assessment

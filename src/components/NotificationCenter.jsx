@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default function NotificationCenter({ notifications, onRefresh, onClose }) {
   const markAsRead = async (id) => {

@@ -1,8 +1,8 @@
-import './index.css';
-import React, { useState, useEffect } from 'react';
-import Upload from './components/Upload';
+import { useEffect, useState } from 'react';
 import FileList from './components/FileList';
 import NotificationCenter from './components/NotificationCenter';
+import Upload from './components/Upload';
+import './index.css';
 
 export default function App() {
   const [files, setFiles] = useState([]);

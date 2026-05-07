@@ -10,7 +10,12 @@ export default function App() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [stats, setStats] = useState({ totalFiles: 0, totalSize: 0, totalSizeMB: 0, uploadDays: 0 });
+  const [stats, setStats] = useState({ 
+    totalFiles: 0, 
+    totalSize: 0, 
+    totalSizeMB: '0.00', 
+    uploadDays: 0 
+  });
   const [darkMode, setDarkMode] = useState(false);
 
   // Fetch files on mount
@@ -53,10 +58,13 @@ export default function App() {
   const fetchAnalytics = async () => {
     try {
       const res = await fetch('/api/analytics');
+      if (!res.ok) throw new Error('Analytics fetch failed');
       const data = await res.json();
+      console.log('📊 Analytics data:', data);
       setStats(data);
     } catch (err) {
       console.error('Error fetching analytics:', err);
+      setStats({ totalFiles: 0, totalSize: 0, totalSizeMB: '0.00', uploadDays: 0 });
     }
   };
 

@@ -183,15 +183,26 @@ app.delete('/api/files/:id', async (req, res) => {
 app.get('/api/analytics', async (req, res) => {
   try {
     const stats = await getTotalStats();
-    res.json({
-      totalFiles: stats.totalFiles || 0,
-      totalSize: stats.totalSize || 0,
-      totalSizeMB: ((stats.totalSize || 0) / (1024 * 1024)).toFixed(2),
-      uploadDays: stats.uploadDays || 0
-    });
+    console.log('📊 Backend stats:', stats);
+    
+    const response = {
+      totalFiles: parseInt(stats.totalFiles) || 0,
+      totalSize: parseInt(stats.totalSize) || 0,
+      totalSizeMB: parseFloat(((parseInt(stats.totalSize) || 0) / (1024 * 1024)).toFixed(2)),
+      uploadDays: parseInt(stats.uploadDays) || 0
+    };
+    
+    console.log('📊 Response:', response);
+    res.json(response);
   } catch (error) {
     console.error('Analytics error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      totalFiles: 0,
+      totalSize: 0,
+      totalSizeMB: 0,
+      uploadDays: 0
+    });
   }
 });
 

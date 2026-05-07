@@ -55,7 +55,8 @@ export default function FileList({ files, onRefresh }) {
               <tr>
                 <th className="px-6 py-4 text-left font-semibold text-blue-900">Filename</th>
                 <th className="px-6 py-4 text-left font-semibold text-blue-900">Size</th>
-                <th className="px-6 py-4 text-left font-semibold text-blue-900">Uploaded</th>
+                <th className="px-6 py-4 text-left font-semibold text-blue-900">Upload Date</th>
+                <th className="px-6 py-4 text-left font-semibold text-blue-900">Upload Time</th>
                 <th className="px-6 py-4 text-left font-semibold text-blue-900">Actions</th>
               </tr>
             </thead>
@@ -66,6 +67,9 @@ export default function FileList({ files, onRefresh }) {
                   <td className="px-6 py-4 text-gray-600">{(f.size / 1024).toFixed(2)} KB</td>
                   <td className="px-6 py-4 text-gray-600">
                     {new Date(f.uploadedAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">
+                    {new Date(f.uploadedAt).toLocaleTimeString()}
                   </td>
                   <td className="px-6 py-4 flex gap-3">
                     <a

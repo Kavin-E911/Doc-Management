@@ -138,15 +138,20 @@ export function deleteFile(id) {
 
 export function getTotalStats() {
   return new Promise((resolve, reject) => {
-    db.all(`
+    db.get(`
       SELECT 
         COUNT(*) as totalFiles, 
-        SUM(size) as totalSize,
+        COALESCE(SUM(size), 0) as totalSize,
         COUNT(DISTINCT DATE(uploadedAt)) as uploadDays
       FROM files
-    `, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows[0] || { totalFiles: 0, totalSize: 0, uploadDays: 0 });
-    });
+    `, (err, row) => {
+      if (err) {
+        console.error('Stats query error:', err);
+        reject(err);
+      } else {
+        const stats = row || { totalFiles: 0, totalSize: 0, uploadDays: 0 };
+        console.log('📊 Stats:', stats);
+        resolve(stats);
+      }
   });
 }
